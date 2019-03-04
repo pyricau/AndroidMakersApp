@@ -15,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import fr.paug.androidmakers.R
+import fr.paug.androidmakers.flash_droid.FlashDroidActivity
 import fr.paug.androidmakers.manager.AndroidMakersStore
 import fr.paug.androidmakers.model.RoomKt
 import fr.paug.androidmakers.model.ScheduleSlotKt
@@ -337,10 +338,20 @@ class AgendaFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        val menuItem = menu?.add(activity!!.getString(R.string.filter))
-        menuItem?.setIcon(R.drawable.ic_filter_list_white_24dp)
-        menuItem?.setShowAsAction(SHOW_AS_ACTION_ALWAYS)
-        menuItem?.setOnMenuItemClickListener {
+        var menuItem = menu!!.add("FlashDroid")
+        menuItem.setIcon(R.drawable.ic_egg)
+        menuItem.setShowAsAction(SHOW_AS_ACTION_ALWAYS)
+        menuItem.setOnMenuItemClickListener { item ->
+            val intent = Intent()
+            intent.setClass(context!!, FlashDroidActivity::class.java)
+            startActivity(intent)
+            true
+        }
+
+        menuItem = menu.add(activity!!.getString(R.string.filter))
+        menuItem.setIcon(R.drawable.ic_filter_list_white_24dp)
+        menuItem.setShowAsAction(SHOW_AS_ACTION_ALWAYS)
+        menuItem.setOnMenuItemClickListener { item ->
             if (mDrawerLayout!!.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout!!.closeDrawer(GravityCompat.END)
             } else {
@@ -350,10 +361,4 @@ class AgendaFragment : Fragment() {
         }
     }
     //endregion
-
-    fun rescheduleStarredBlocks() {
-        // reschedule all starred blocks in case one session start or stop time has changed
-        val scheduleIntent = Intent(SessionAlarmService.ACTION_SCHEDULE_ALL_STARRED_BLOCKS)
-        SessionAlarmService.enqueueWork(context!!, scheduleIntent)
-    }
 }
